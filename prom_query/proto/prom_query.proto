@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package prom_query;
+
+service PromQuery {
+	rpc PromQuery(stream MonitoringRequest) returns (stream MonitoringResponse) {}
+}
+
+message MonitoringRequest {
+	int32 request_id = 1;
+	string query = 2;
+	string instance = 3;
+	int32 threshold = 4;
+}
+
+message MonitoringResponse {
+	int32 request_id = 1;
+	int32 value = 2;
+}
+
+//'{"request_id" = 11, "query" = "100 * avg(1 - rate(node_cpu_seconds_total{mode="idle"}[5m])) by (instance)", "instance" = "10.244.0.8", "threshold" = 50}'
+//grpcurl -plaintext -import-path ./proto -proto prom_query.proto -d '{"request_id": 11, "query": "100 * avg(1 - rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) by (instance)", "instance": "10.244.0.9", "threshold": 50}' 10.244.0.13:50051 prom_query.PromQuery/PromQuery
+//grpcurl -plaintext -import-path ./proto -proto prom_query.proto -d '{"request_id": 11, "query": "100 * avg(1 - rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) by (instance)", "instance": "172.18.0.2:9100", "threshold": 50}' 10.244.0.12:50051 prom_query.PromQuery/PromQuery
+
+//grpcurl -plaintext -import-path ./proto -proto prom_query.proto -d '{"request_id": 11, "query": "sum(rate(container_cpu_usage_seconds_total{container!=\"\"}[5m])) by (pod, namespace)", "instance": "172.18.0.2:9100", "threshold": 50}' 10.244.0.12:50051 prom_query.PromQuery/PromQuery
+//grpcurl -plaintext -import-path ./proto -proto prom_query.proto -d '{"request_id": 11, "query": "sum(rate(container_cpu_usage_seconds_total{container!=\"\"}[5m])) by (pod)", "instance": "monitor-app-77f8c598d5-g9hzb", "threshold": 50}' 10.244.0.12:50051 prom_query.PromQuery/PromQuery
