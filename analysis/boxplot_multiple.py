@@ -6,15 +6,11 @@ import numpy as np
 # List of CSV files to process
 csv_files = [
     "timings_c.csv",
-    #"timings_c_vm_4.csv",
-    #"timings_c_vm_10.csv",
     "timings_c_100.csv",
 ]
 
 labels = [
         "1 pod",
-        #"4 pods",
-        #"10 pods",
         "100 pods",
 ]
 
